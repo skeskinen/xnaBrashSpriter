@@ -15,5 +15,6 @@ namespace BrashMonkeySpriter.Spriter {
         public Int32 Timeline;
         public Int32 Key;
         public Int32 ZOrder;
+        public Int32 BoneId;
     }
 }

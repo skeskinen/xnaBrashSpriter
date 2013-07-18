@@ -110,6 +110,7 @@ namespace BrashMonkeySpriter.Content {
                             l_body.Timeline = p_input.ReadInt32();//timeline
                             l_body.Key = p_input.ReadInt32();//key
                             l_body.ZOrder = p_input.ReadInt32();//z_index
+                            l_body.BoneId = -1;
 
                             l_key.Body.Add(l_body);
                         }
@@ -122,6 +123,7 @@ namespace BrashMonkeySpriter.Content {
                             l_bone.Parent = p_input.ReadInt32();//parent
                             l_bone.Timeline = p_input.ReadInt32();//timeline
                             l_bone.Key = p_input.ReadInt32();//key
+                            l_bone.BoneId = l_bIter;
 
                             l_key.Bones.Add(l_bone);
                         }

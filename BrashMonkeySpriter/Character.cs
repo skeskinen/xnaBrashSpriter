@@ -121,10 +121,14 @@ namespace BrashMonkeySpriter {
         protected List<Texture2D> m_tx;
         protected List<List<Rectangle>> m_rect;
 
+        protected Dictionary<int, AnimationTransform> m_boneTransforms;
+
         public CharaterAnimator(CharacterModel p_model, String p_entity) {
             m_entity = p_model[p_entity];
             m_tx = p_model.Textures;
             m_rect = p_model.Rectangles;
+
+            m_boneTransforms = new Dictionary<int, AnimationTransform>();
 
             ChangeAnimation(0);
         }
@@ -211,20 +215,29 @@ namespace BrashMonkeySpriter {
         }
 
         protected AnimationTransform ApplyBoneTransforms(MainlineKey p_main, Reference p_reference) {
+            if (p_reference.BoneId >= 0 && m_boneTransforms.ContainsKey(p_reference.BoneId))
+            {
+                return m_boneTransforms[p_reference.BoneId];
+            }
+
             AnimationTransform l_frame = GetFrameTransition(p_reference);
 
             // Apply transforms from self and/or parent
-            return ApplyTransform(
+            var l_transform = ApplyTransform(
                 (p_reference.Parent != -1) ? ApplyBoneTransforms(p_main, p_main.Bones[p_reference.Parent]) : new AnimationTransform(Vector2.Zero, MathHelper.ToRadians(Rotation), new Vector2(Math.Abs(Scale))),
                 l_frame.Scale,
                 l_frame.Rotation,
                 l_frame.Location,
                 l_frame.Alpha
             );
+            if (p_reference.BoneId >= 0)
+                m_boneTransforms.Add(p_reference.BoneId, l_transform);
+            return l_transform;
         }
 
         public void Update(GameTime p_gameTime) {
             m_renderList.Clear();
+            m_boneTransforms.Clear();
             
             m_elapsedTime += p_gameTime.ElapsedGameTime.Milliseconds;
             if (m_elapsedTime > m_current.Length) {
@@ -245,6 +258,7 @@ namespace BrashMonkeySpriter {
             Vector2 l_flip = new Vector2(m_flipX ? -1.0f : 1.0f, m_flipY ? -1.0f : 1.0f);
 
             MainlineKey l_mainline = m_current.MainLine[l_frame];
+            
             for (int l_i = 0; l_i < l_mainline.Body.Count; l_i++) {
                 TimelineKey l_key = m_current.TimeLines[l_mainline.Body[l_i].Timeline].Keys[l_mainline.Body[l_i].Key];
                 // check if file for this object is missing, and if so skip calculating transforms
