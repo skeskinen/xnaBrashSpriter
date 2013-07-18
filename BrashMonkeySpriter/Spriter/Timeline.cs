@@ -20,9 +20,25 @@ namespace BrashMonkeySpriter.Spriter {
         }
     }
 
-    public struct Timeline {
+    public class Timeline {
         public String Name;
         public List<TimelineKey> Keys;
+        public int KeyAtOrBefore(int p_elapsedTime)
+        {
+            // Binary search correct key
+            int lo = 0, hi = Keys.Count - 1;
+            while ( hi - lo > 1)
+            {
+                int m = (hi + lo) / 2;
+                if (Keys[m].Time > p_elapsedTime) hi = m - 1;
+                else lo = m;
+            }
+            if (Keys[hi].Time < p_elapsedTime)
+                return hi;
+            
+            return lo;
+            
+        }
     }
 
     public struct TimelineKey {

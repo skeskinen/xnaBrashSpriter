@@ -140,23 +140,39 @@ namespace BrashMonkeySpriter {
         }
 
         protected AnimationTransform GetFrameTransition(Reference p_ref) {
-            //  Figure out the current frame (easy) and find the next frame.
-            int l_nextTime = m_current.Length;
-            int l_thisTime = m_elapsedTime - m_current.TimeLines[p_ref.Timeline].Keys[p_ref.Key].Time;
-            int l_keyNext = p_ref.Key;
+            Timeline l_timeline = m_current.TimeLines[p_ref.Timeline];
+            
+            // Find the current frame. 
+            // The one referenced by mainline is not neccesarily the correct one
+            // I guess the Spriter editor sometimes messes things up
+            // I'm not sure how to reproduce this problem but better safe than sorry? For the reference XSpriter does something similar
 
-            if ((p_ref.Key + 1) < m_current.TimeLines[p_ref.Timeline].Keys.Count) {
-                l_keyNext = p_ref.Key + 1;
-                l_nextTime = m_current.TimeLines[p_ref.Timeline].Keys[l_keyNext].Time;
-            } else if (m_current.Looping) {
+            int l_keyCur = l_timeline.KeyAtOrBefore(m_elapsedTime);
+
+            int l_thisTime = m_elapsedTime - l_timeline.Keys[l_keyCur].Time;
+            int l_keyNext;
+            int l_nextTime;
+            // Find the next frame.
+            if ((l_keyCur + 1) < l_timeline.Keys.Count) {
+                l_keyNext = l_keyCur + 1;
+                l_nextTime = l_timeline.Keys[l_keyNext].Time;
+            }
+            else if (m_current.Looping)
+            {
                 l_keyNext = 0;
+                l_nextTime = m_current.Length;
+            }
+            else
+            {
+                l_keyNext = l_keyCur;
+                l_nextTime = m_current.Length;
             }
 
             //  Figure out where we are in the timeline...
-            l_nextTime = l_nextTime - m_current.TimeLines[p_ref.Timeline].Keys[p_ref.Key].Time;
+            l_nextTime = l_nextTime - l_timeline.Keys[l_keyCur].Time;
 
-            TimelineKey l_now = m_current.TimeLines[p_ref.Timeline].Keys[p_ref.Key];
-            TimelineKey l_next = m_current.TimeLines[p_ref.Timeline].Keys[l_keyNext];
+            TimelineKey l_now = l_timeline.Keys[l_keyCur];
+            TimelineKey l_next = l_timeline.Keys[l_keyNext];
 
             /// Tween EVERYTHING... Gonna have to add an option for it not to...
             /// Rotations are handled differently depending on which way they're supposed to spin
