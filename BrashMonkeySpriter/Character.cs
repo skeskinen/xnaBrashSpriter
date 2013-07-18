@@ -123,6 +123,9 @@ namespace BrashMonkeySpriter {
 
         protected Dictionary<int, AnimationTransform> m_boneTransforms;
 
+        public delegate void AnimationEndedHandler();
+        public event AnimationEndedHandler AnimationEnded;
+
         public CharaterAnimator(CharacterModel p_model, String p_entity) {
             m_entity = p_model[p_entity];
             m_tx = p_model.Textures;
@@ -241,6 +244,7 @@ namespace BrashMonkeySpriter {
             
             m_elapsedTime += p_gameTime.ElapsedGameTime.Milliseconds;
             if (m_elapsedTime > m_current.Length) {
+                AnimationEnded();
                 if (m_current.Looping) {
                     m_elapsedTime -= m_current.Length;
                 } else {
