@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C# Express 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrashMonkeyContentPipelineExtension", "BrashMonkeyContentPipelineExtension\BrashMonkeyContentPipelineExtension.csproj", "{BC6A7F30-AFD4-48E3-83CE-AB412E33D759}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrashMonkeySpriterGameTest", "BrashMonkeySpriterGameTest\BrashMonkeySpriterGameTest\BrashMonkeySpriterGameTest.csproj", "{A35FF77E-F157-4D0C-B880-7C0FB0FD810F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrashMonkeySpriterGameTestContent", "BrashMonkeySpriterGameTest\BrashMonkeySpriterGameTestContent\BrashMonkeySpriterGameTestContent.contentproj", "{2B854EFC-3FD2-4A4B-857A-2AC3739782BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrashMonkeySpriter", "BrashMonkeySpriter\BrashMonkeySpriter.csproj", "{ED000F2E-4CFF-432F-9FAD-BA08ECB05D7D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BC6A7F30-AFD4-48E3-83CE-AB412E33D759}.Debug|x86.ActiveCfg = Debug|x86
+		{BC6A7F30-AFD4-48E3-83CE-AB412E33D759}.Debug|x86.Build.0 = Debug|x86
+		{BC6A7F30-AFD4-48E3-83CE-AB412E33D759}.Release|x86.ActiveCfg = Debug|x86
+		{BC6A7F30-AFD4-48E3-83CE-AB412E33D759}.Release|x86.Build.0 = Debug|x86
+		{A35FF77E-F157-4D0C-B880-7C0FB0FD810F}.Debug|x86.ActiveCfg = Debug|x86
+		{A35FF77E-F157-4D0C-B880-7C0FB0FD810F}.Debug|x86.Build.0 = Debug|x86
+		{A35FF77E-F157-4D0C-B880-7C0FB0FD810F}.Release|x86.ActiveCfg = Release|x86
+		{A35FF77E-F157-4D0C-B880-7C0FB0FD810F}.Release|x86.Build.0 = Release|x86
+		{2B854EFC-3FD2-4A4B-857A-2AC3739782BA}.Debug|x86.ActiveCfg = Debug|x86
+		{2B854EFC-3FD2-4A4B-857A-2AC3739782BA}.Release|x86.ActiveCfg = Release|x86
+		{ED000F2E-4CFF-432F-9FAD-BA08ECB05D7D}.Debug|x86.ActiveCfg = Debug|x86
+		{ED000F2E-4CFF-432F-9FAD-BA08ECB05D7D}.Debug|x86.Build.0 = Debug|x86
+		{ED000F2E-4CFF-432F-9FAD-BA08ECB05D7D}.Release|x86.ActiveCfg = Release|x86
+		{ED000F2E-4CFF-432F-9FAD-BA08ECB05D7D}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
