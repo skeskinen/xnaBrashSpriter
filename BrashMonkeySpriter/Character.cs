@@ -244,7 +244,8 @@ namespace BrashMonkeySpriter {
             
             m_elapsedTime += p_gameTime.ElapsedGameTime.Milliseconds;
             if (m_elapsedTime > m_current.Length) {
-                AnimationEnded();
+                if (AnimationEnded != null)
+                    AnimationEnded();
                 if (m_current.Looping) {
                     m_elapsedTime -= m_current.Length;
                 } else {
