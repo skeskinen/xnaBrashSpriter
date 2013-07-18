@@ -159,6 +159,7 @@ namespace BrashMonkeySpriter {
             }
             else if (m_current.Looping)
             {
+                // Assume that there is a frame at time=0
                 l_keyNext = 0;
                 l_nextTime = m_current.Length;
             }
@@ -245,8 +246,14 @@ namespace BrashMonkeySpriter {
 
             MainlineKey l_mainline = m_current.MainLine[l_frame];
             for (int l_i = 0; l_i < l_mainline.Body.Count; l_i++) {
-                RenderMatrix l_render = new RenderMatrix(ApplyBoneTransforms(l_mainline, l_mainline.Body[l_i]));
                 TimelineKey l_key = m_current.TimeLines[l_mainline.Body[l_i].Timeline].Keys[l_mainline.Body[l_i].Key];
+                // check if file for this object is missing, and if so skip calculating transforms
+                if (m_rect[l_key.Folder][l_key.File].Width == 0)
+                {
+                    continue;
+                }
+
+                RenderMatrix l_render = new RenderMatrix(ApplyBoneTransforms(l_mainline, l_mainline.Body[l_i]));
 
                 l_render.File = l_key.File;
                 l_render.Folder = l_key.Folder;
