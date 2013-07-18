@@ -16,6 +16,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
+using System.Globalization;
 
 namespace BrashMonkeyContentPipelineExtension {
     [ContentTypeWriter]
@@ -31,7 +32,7 @@ namespace BrashMonkeyContentPipelineExtension {
 
         private bool GetAttributeFloat(XElement p_element, String p_name, out float p_out, float p_default = 0.0f) {
             if (p_element.Attribute(p_name) != null) {
-                return float.TryParse(p_element.Attribute(p_name).Value, out p_out);
+                return float.TryParse(p_element.Attribute(p_name).Value, NumberStyles.Any, CultureInfo.InvariantCulture, out p_out);
             }
 
             p_out = p_default;
