@@ -54,12 +54,12 @@ namespace BrashMonkeySpriter {
                 Alpha = p_at.Alpha;
                 Location = p_at.Location;
                 Rotation = p_at.Rotation;
+                Pivot = p_at.Pivot;
                 Scale = p_at.Scale;
 
                 Effects = SpriteEffects.None;
                 File = 0;
                 Folder = 0;
-                Pivot = Vector2.Zero;
                 ZOrder = 0;
             }
         }
@@ -67,13 +67,15 @@ namespace BrashMonkeySpriter {
         protected struct AnimationTransform {
             public float Alpha;
             public Vector2 Location;
+            public Vector2 Pivot;
             public Single Rotation;
             public Vector2 Scale;
 
-            public AnimationTransform(Vector2 p_location, float p_rotation, Vector2 p_scale) {
+            public AnimationTransform(Vector2 p_location, float p_rotation, Vector2 p_pivot, Vector2 p_scale) {
                 Alpha = 1.0f;
                 Location = p_location;
                 Rotation = p_rotation;
+                Pivot = p_pivot;
                 Scale = p_scale;
             }
         }
@@ -195,24 +197,27 @@ namespace BrashMonkeySpriter {
 
             l_render.Scale = Vector2.Lerp(l_now.Scale, l_next.Scale, (float)l_thisTime / (float)l_nextTime);
             l_render.Location = Vector2.Lerp(l_now.Location, l_next.Location, (float)l_thisTime / (float)l_nextTime);
+            l_render.Pivot = Vector2.Lerp(l_now.Pivot, l_next.Pivot, (float)l_thisTime / (float)l_nextTime);
             l_render.Alpha = MathHelper.Lerp(l_now.Alpha, l_next.Alpha, (float)l_thisTime / (float)l_nextTime);
 
             // So, how far are we between frames?
             return l_render;
         }
 
-        protected AnimationTransform ApplyTransform(AnimationTransform p_baseTransform, Vector2 p_scale, float p_rotation, Vector2 p_location, float p_alpha) {
+        protected AnimationTransform ApplyTransform(AnimationTransform p_transform, AnimationTransform p_baseTransform) {
             //  Create a tranformation matrix so we can find out the location of the bone \ body
             Matrix l_matrix =   Matrix.CreateScale(p_baseTransform.Scale.X, p_baseTransform.Scale.Y, 0) *
                                 Matrix.CreateRotationZ(p_baseTransform.Rotation) *
                                 Matrix.CreateTranslation(p_baseTransform.Location.X, p_baseTransform.Location.Y, 0);
 
-            //  Apply the scaling, rotation and tranform matrix to current structure
             AnimationTransform l_result = new AnimationTransform();
-            l_result.Scale = p_baseTransform.Scale * p_scale;
-            l_result.Rotation = p_baseTransform.Rotation + p_rotation;
-            l_result.Location = Vector2.Transform(p_location, l_matrix);
-            l_result.Alpha = p_baseTransform.Alpha * p_alpha;
+
+            //  Apply the scaling, rotation and tranform matrix to current structure
+            l_result.Scale = p_transform.Scale * p_baseTransform.Scale;
+            l_result.Rotation = p_transform.Rotation + p_baseTransform.Rotation;
+            l_result.Location = Vector2.Transform(p_transform.Location, l_matrix);
+            l_result.Alpha = p_transform.Alpha * p_baseTransform.Alpha;
+            l_result.Pivot = p_transform.Pivot;
 
             return l_result;
         }
@@ -223,16 +228,18 @@ namespace BrashMonkeySpriter {
                 return m_boneTransforms[p_reference.BoneId];
             }
 
-            AnimationTransform l_frame = GetFrameTransition(p_reference);
+            AnimationTransform l_transform = GetFrameTransition(p_reference);
 
-            // Apply transforms from self and/or parent
-            var l_transform = ApplyTransform(
-                (p_reference.Parent != -1) ? ApplyBoneTransforms(p_main, p_main.Bones[p_reference.Parent]) : new AnimationTransform(Vector2.Zero, MathHelper.ToRadians(Rotation), new Vector2(Math.Abs(Scale))),
-                l_frame.Scale,
-                l_frame.Rotation,
-                l_frame.Location,
-                l_frame.Alpha
-            );
+            AnimationTransform l_baseTransform;
+            if((p_reference.Parent != -1)){
+                l_baseTransform = ApplyBoneTransforms(p_main, p_main.Bones[p_reference.Parent]);
+            }
+            else{
+                //Apply global transforms to objects without parents (location is added later)
+                l_baseTransform = new AnimationTransform(Vector2.Zero, Rotation, Vector2.Zero, new Vector2(Math.Abs(Scale)));
+            }
+            l_transform = ApplyTransform(l_transform, l_baseTransform);
+
             if (p_reference.BoneId >= 0)
                 m_boneTransforms.Add(p_reference.BoneId, l_transform);
             return l_transform;
@@ -276,7 +283,6 @@ namespace BrashMonkeySpriter {
 
                 l_render.File = l_key.File;
                 l_render.Folder = l_key.Folder;
-                l_render.Pivot = l_key.Pivot;
 
                 l_render.Location = Location + Vector2.Multiply(l_render.Location, l_flip);
                     
